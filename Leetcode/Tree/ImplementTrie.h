@@ -15,28 +15,10 @@ public:
 
     bool startsWith(string prefix);
 
+    static bool TestSolution(vector<string> func, vector<string> inputs, vector<bool> sol);
+    static bool TestSolution();
 private :
-    //char c =  ' ';
+    // you don't even need to store a character in the node, the character is stored in the hashmap entry
     bool isWord = false;
     unordered_map<char, Trie*> tries;
-};
-
-
-
-
-class Node {
-
-public :
-
-    Node(char c) :
-        c(c),
-        isWord(false)
-    {
-
-    };
-
-    char c;
-    bool isWord = false;
-    unordered_map<char, Node*> nodes;
-
 };

@@ -1,63 +1,128 @@
 #include "ImplementTrie.h"
 #include <iostream>
 
-Trie::Trie() {
+Trie::Trie()
+{
 
 }
 
 Trie::~Trie()
 {
-	for (auto trie : tries)
+	if (tries.size() > 0)
 	{
-		delete trie.second;
-		tries.erase(trie.first);
+		// iterate and delete each trie through there pointer and remove from map
+		for (auto trie = tries.begin(); trie != tries.end(); )
+		{
+			delete trie->second;
+			trie = tries.erase(trie);
+		}
+		tries.clear();
 	}
 }
 
 void Trie::insert(string word) {
 	if (word.length() == 0) return;
-	if (word.length() == 1)
+	
+	Trie* currentTrie = this;
+	for (auto c : word)
 	{
-		//c = word.front();
-		isWord = true;
-		return;
-	}
-	else
-	{
-		if (tries[word.front()] != nullptr)
+		if (currentTrie->tries[c] != nullptr)		// if already existe , go down one character
 		{
-			tries[word.front()]->insert(word.substr(1, word.length() - 1));
+			currentTrie = currentTrie->tries[c];
 		}
 		else
 		{
 			Trie* trie = new Trie();
-			tries[word.front()] = trie;
-			tries[word.front()]->insert(word.substr(1, word.length() - 1));
+			currentTrie->tries[c] = trie;
+			currentTrie = trie;
 		}
 	}
+	currentTrie->isWord = true;
+
 	return;
 }
 
 bool Trie::search(string word) {
 	if (word.length() == 0) return false;
-	if (word.length() == 1)
+	Trie* currentTrie = this;
+	for (auto c : word)
 	{
-		return isWord;
+		if (currentTrie->tries[c] != nullptr)		// if already existe , go down one character
+		{
+			currentTrie = currentTrie->tries[c];
+		}
+		else
+		{
+			return false;
+		}
 	}
-	else
-	{
-		return tries[word.front()] != nullptr ? tries[word.front()]->search(word.substr(1, word.length() - 1)) : false;
-	}
+	return currentTrie->isWord;
 }
 
 bool Trie::startsWith(string prefix) {
 	if (prefix.length() == 0) return false;
-	if (prefix.length() == 1)
+	Trie* currentTrie = this;
+	for (auto c : prefix)
 	{
-		return true;
+		if (currentTrie->tries[c] != nullptr)		// if already existe , go down one character
+		{
+			currentTrie = currentTrie->tries[c];
+		}
+		else
+		{
+			return false;
+		}
 	}
-	else
+	return true;
+}
+
+bool Trie::TestSolution(vector<string> func, vector<string> inputs, vector<bool> sol)
+{
+	if (func.size() != inputs.size() || func.size() != sol.size() || inputs.size() != sol.size())
 	{
-		return tries[prefix.front()] != nullptr ? tries[prefix.front()]->startsWith(prefix.substr(1, prefix.length() - 1)) : false;
+		return false;
 	}
+
+	Trie* trie = new Trie();
+	for (int i = 0; i < func.size(); ++i)
+	{
+		string fn = func[i];
+		string in = inputs[i];
+		bool sl = sol[i];
+		bool rtn = false;
+
+		if (fn.compare("Trie") == 0)
+		{
+			// do nothing, trie is already created
+		}
+		if (fn.compare("insert") == 0)
+		{
+			trie->insert(in);
+		}
+		if (fn.compare("search") == 0)
+		{
+			rtn = trie->search(in);
+			if (rtn != sl)
+			{
+				delete trie;
+				return false;
+			}
+		}
+		if (fn.compare("startsWith") == 0)
+		{
+			rtn = trie->startsWith(in);
+			if (rtn != sl)
+			{
+				delete trie;
+				return false;
+			}
+		}
+	}
+	delete trie;
+	return true;
+}
+
+bool Trie::TestSolution()
+{
+	return TestSolution({ "Trie", "insert", "search", "search", "startsWith", "insert", "search" }, { "" ,"apple","apple","app","app","app","app"}, { NULL, NULL, true, false, true, NULL, true });
 }

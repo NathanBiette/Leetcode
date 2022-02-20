@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Array/ContainerWithMostWater.h"
 #include "String/PalindromicSubstrings.h"
+#include "Tree/ImplementTrie.h"
 
 int main()
 {
@@ -12,7 +13,17 @@ int main()
 	//{
 	//	std::cout << "Solution is not\n";
 	//}
-	cout << "num palindrome " << PalindromicSubstrings::countSubstrings("aaabcdefgaba");
-	cout << "num palindrome " << PalindromicSubstrings::countSubstrings2("aaabcdefgaba");
+	//cout << "num palindrome " << PalindromicSubstrings::countSubstrings("aaabcdefgaba");
+	//cout << "num palindrome " << PalindromicSubstrings::countSubstrings2("aaabcdefgaba");
+
+	if (Trie::TestSolution())
+	{
+		cout << "trie is working true \n";
+	}
+	else
+	{
+		cout << "trie is not working \n";
+	}
+
 	return 0;
 }
